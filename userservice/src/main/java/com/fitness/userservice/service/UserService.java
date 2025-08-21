@@ -22,7 +22,8 @@ public class UserService {
     public UserResponse register(@Valid RegisterRequest registerRequest) {
         // Check if user already exists
         if (userRepo.existsByEmail(registerRequest.getEmail())) {
-            throw new IllegalArgumentException("User with this email already exists");
+            User existingUser = userRepo.findByEmail(registerRequest.getEmail());
+            return userMapper.toResponse(existingUser);
         }
         User user = userMapper.toEntity(registerRequest);
         User savedUser = userRepo.save(user);
@@ -39,6 +40,6 @@ public class UserService {
     }
 
     public Boolean existByUserId(String userId) {
-        return userRepo.existsById(userId);
+        return userRepo.existsByKeycloakId(userId);
     }
 }
